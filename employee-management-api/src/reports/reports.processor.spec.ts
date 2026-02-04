@@ -17,7 +17,14 @@ describe('ReportsProcessor', () => {
   });
 
   it('should call processReportJob when job is received', async () => {
-    const job = { data: { jobId: '1', type: 'pdf', startDate: new Date(), endDate: new Date() } };
+    const job = {
+      data: {
+        jobId: '1',
+        type: 'pdf',
+        startDate: new Date(),
+        endDate: new Date(),
+      },
+    };
     await processor.handleGeneration(job as any);
     expect(mockService.processReportJob).toHaveBeenCalled();
   });

@@ -9,6 +9,11 @@ export class ReportsProcessor {
   @Process('generate')
   async handleGeneration(job: Job) {
     const { jobId, type, startDate, endDate } = job.data;
-    await this.reportsService.processReportJob(jobId, type, new Date(startDate), new Date(endDate));
+    await this.reportsService.processReportJob(
+      jobId,
+      type,
+      new Date(startDate),
+      new Date(endDate),
+    );
   }
 }

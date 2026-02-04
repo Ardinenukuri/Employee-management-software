@@ -8,7 +8,7 @@ import { MailConsumer } from './mail.consumer';
   imports: [
     BullModule.registerQueueAsync({
       name: 'mail-queue',
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         redis: {
           host: configService.get('REDIS_HOST'),
           port: +configService.get('REDIS_PORT'),

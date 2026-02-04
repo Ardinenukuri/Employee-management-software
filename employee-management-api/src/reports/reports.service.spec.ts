@@ -24,39 +24,63 @@ describe('ReportsService', () => {
   });
 
   it('should start report generation and return jobId', async () => {
-    const result = await service.startReportGeneration('pdf', new Date(), new Date());
+    const result = await service.startReportGeneration(
+      'pdf',
+      new Date(),
+      new Date(),
+    );
     expect(result.jobId).toBeDefined();
     expect(queue.add).toHaveBeenCalled();
   });
 
   it('should throw error if status jobId is invalid', async () => {
-    await expect(service.getReportStatus('invalid')).rejects.toThrow(NotFoundException);
+    await expect(service.getReportStatus('invalid')).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('should return processing status', async () => {
-    const { jobId } = await service.startReportGeneration('pdf', new Date(), new Date());
-    const result = await service.getReportStatus(jobId);
+    const { jobId } = await service.startReportGeneration(
+      'pdf',
+      new Date(),
+      new Date(),
+    );
+    const result = service.getReportStatus(jobId);
     expect(result.status).toBe('processing');
   });
 
   it('should process job and mark as completed', async () => {
     repo.find.mockResolvedValue([]);
-    const { jobId } = await service.startReportGeneration('pdf', new Date(), new Date());
+    const { jobId } = await service.startReportGeneration(
+      'pdf',
+      new Date(),
+      new Date(),
+    );
     await service.processReportJob(jobId, 'pdf', new Date(), new Date());
-    const status = await service.getReportStatus(jobId);
+    const status = service.getReportStatus(jobId);
     expect(status.status).toBe('completed');
   });
 
   it('should throw if downloading unready report', async () => {
-    const { jobId } = await service.startReportGeneration('pdf', new Date(), new Date());
-    await expect(service.downloadReport(jobId)).rejects.toThrow(NotFoundException);
+    const { jobId } = await service.startReportGeneration(
+      'pdf',
+      new Date(),
+      new Date(),
+    );
+    await expect(service.downloadReport(jobId)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('should download completed report', async () => {
     repo.find.mockResolvedValue([]);
-    const { jobId } = await service.startReportGeneration('excel', new Date(), new Date());
+    const { jobId } = await service.startReportGeneration(
+      'excel',
+      new Date(),
+      new Date(),
+    );
     await service.processReportJob(jobId, 'excel', new Date(), new Date());
-    const result = await service.downloadReport(jobId);
+    const result = service.downloadReport(jobId);
     expect(result.buffer).toBeDefined();
   });
 });

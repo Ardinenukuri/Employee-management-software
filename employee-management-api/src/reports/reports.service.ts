@@ -1,4 +1,3 @@
-
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendance } from '../database/entities/attendance.entity';
 import { Between, Repository } from 'typeorm';
@@ -9,13 +8,14 @@ import { Buffer } from 'buffer';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
-import { v4 as uuidv4 } from 'uuid';
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ReportsService {
-
-    private reportStore = new Map<string, { status: string; buffer?: Buffer; type?: string }>();
+  private reportStore = new Map<
+    string,
+    { status: string; buffer?: Buffer; type?: string }
+  >();
   constructor(
     @InjectQueue('reports-queue') private reportQueue: Queue,
     @InjectRepository(Attendance)
@@ -23,7 +23,11 @@ export class ReportsService {
   ) {}
 
   // Because we are now using hard delete, we no longer need 'withDeleted' here
-  private async getAttendanceData(startDate: Date, endDate: Date, employeeId?: string) {
+  private async getAttendanceData(
+    startDate: Date,
+    endDate: Date,
+    employeeId?: string,
+  ) {
     const where: any = {
       date: Between(startDate, endDate),
     };
@@ -39,35 +43,49 @@ export class ReportsService {
     });
   }
 
-  async startReportGeneration(type: 'pdf' | 'excel', startDate: Date, endDate: Date) {
+  async startReportGeneration(
+    type: 'pdf' | 'excel',
+    startDate: Date,
+    endDate: Date,
+  ) {
     const jobId = randomUUID(); // <--- Built-in, no imports needed
     this.reportStore.set(jobId, { status: 'processing' });
     await this.reportQueue.add('generate', { jobId, type, startDate, endDate });
     return { jobId };
   }
 
-  async getReportStatus(jobId: string) {
+  getReportStatus(jobId: string) {
     const report = this.reportStore.get(jobId);
     if (!report) throw new NotFoundException('Job not found');
     return { status: report.status };
   }
 
-  async downloadReport(jobId: string) {
+  downloadReport(jobId: string) {
     const report = this.reportStore.get(jobId);
-    if (!report || report.status !== 'completed') throw new NotFoundException('Report not ready');
+    if (!report || report.status !== 'completed')
+      throw new NotFoundException('Report not ready');
     return { buffer: report.buffer, type: report.type };
   }
 
   // This will be called by the Queue Consumer
-  async processReportJob(jobId: string, type: 'pdf' | 'excel', start: Date, end: Date) {
-    const buffer = type === 'pdf' 
-      ? await this.generatePdfReport(start, end) 
-      : await this.generateExcelReport(start, end);
-    
-    this.reportStore.set(jobId, { 
-      status: 'completed', 
-      buffer, 
-      type: type === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+  async processReportJob(
+    jobId: string,
+    type: 'pdf' | 'excel',
+    start: Date,
+    end: Date,
+  ) {
+    const buffer =
+      type === 'pdf'
+        ? await this.generatePdfReport(start, end)
+        : await this.generateExcelReport(start, end);
+
+    this.reportStore.set(jobId, {
+      status: 'completed',
+      buffer,
+      type:
+        type === 'pdf'
+          ? 'application/pdf'
+          : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
   }
 
@@ -77,8 +95,10 @@ export class ReportsService {
 
     autoTable(doc, {
       // Step 1: Add new headers for the PDF
-      head: [['Date', 'Employee', 'Email', 'Identifier', 'Clock In', 'Clock Out']],
-      body: data.map(item => [
+      head: [
+        ['Date', 'Employee', 'Email', 'Identifier', 'Clock In', 'Clock Out'],
+      ],
+      body: data.map((item) => [
         item.date.toLocaleDateString(),
         // Step 2: Add new data points for the PDF
         // The check for item.user is still good practice in case of rare issues
@@ -107,17 +127,19 @@ export class ReportsService {
       { header: 'Clock Out', key: 'clockOut', width: 15 },
     ];
 
-    data.forEach(item => {
+    data.forEach((item) => {
       worksheet.addRow({
         date: item.date.toLocaleDateString(),
         // Step 2: Add new data points for each row in Excel
-        employee: item.user 
-          ? `${item.user.firstName} ${item.user.lastName}` 
+        employee: item.user
+          ? `${item.user.firstName} ${item.user.lastName}`
           : 'N/A',
         email: item.user ? item.user.email : 'N/A',
         identifier: item.user ? item.user.employeeIdentifier : 'N/A',
         clockIn: item.clockInTime.toLocaleTimeString(),
-        clockOut: item.clockOutTime ? item.clockOutTime.toLocaleTimeString() : 'N/A',
+        clockOut: item.clockOutTime
+          ? item.clockOutTime.toLocaleTimeString()
+          : 'N/A',
       });
     });
 

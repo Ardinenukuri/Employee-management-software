@@ -15,7 +15,10 @@ describe('AttendanceService', () => {
       providers: [
         AttendanceService,
         { provide: getRepositoryToken(Attendance), useValue: repo },
-        { provide: MailProducerService, useValue: { sendAttendanceConfirmation: jest.fn() } },
+        {
+          provide: MailProducerService,
+          useValue: { sendAttendanceConfirmation: jest.fn() },
+        },
       ],
     }).compile();
     service = module.get<AttendanceService>(AttendanceService);
@@ -29,12 +32,16 @@ describe('AttendanceService', () => {
 
   it('clockOut fails if no record', async () => {
     repo.findOne.mockResolvedValue(null);
-    await expect(service.clockOut({ id: '1' } as any)).rejects.toThrow(NotFoundException);
+    await expect(service.clockOut({ id: '1' } as any)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('clockIn should throw ConflictException if already clocked in', async () => {
     repo.findOne.mockResolvedValue({ id: 'existing-record' }); // Simulate record found
-    await expect(service.clockIn({ id: '1' } as any)).rejects.toThrow(ConflictException);
+    await expect(service.clockIn({ id: '1' } as any)).rejects.toThrow(
+      ConflictException,
+    );
   });
 
   it('clockOut success', async () => {

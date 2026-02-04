@@ -4,10 +4,10 @@ import { ReportsService } from './reports.service';
 
 describe('ReportsController', () => {
   let controller: ReportsController;
-  const mockService = { 
-    startReportGeneration: jest.fn(), 
-    getReportStatus: jest.fn(), 
-    downloadReport: jest.fn() 
+  const mockService = {
+    startReportGeneration: jest.fn(),
+    getReportStatus: jest.fn(),
+    downloadReport: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -20,12 +20,15 @@ describe('ReportsController', () => {
 
   it('should call all service endpoints', async () => {
     const res = { set: jest.fn() } as any;
-    mockService.downloadReport.mockResolvedValue({ buffer: Buffer.from(''), type: 'pdf' });
-    
+    mockService.downloadReport.mockResolvedValue({
+      buffer: Buffer.from(''),
+      type: 'pdf',
+    });
+
     await controller.trigger('pdf', new Date(), new Date());
-    await controller.status('123');
-    await controller.download('123', res);
-    
+    controller.status('123');
+    controller.download('123', res);
+
     expect(mockService.startReportGeneration).toHaveBeenCalled();
     expect(mockService.getReportStatus).toHaveBeenCalled();
     expect(mockService.downloadReport).toHaveBeenCalled();

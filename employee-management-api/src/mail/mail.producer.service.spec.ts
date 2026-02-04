@@ -19,12 +19,18 @@ describe('MailProducerService', () => {
   });
 
   it('should add attendance job to queue', async () => {
-    await service.sendAttendanceConfirmation({ firstName: 'test', email: 'a@a.com' } as any, new Date());
+    await service.sendAttendanceConfirmation(
+      { firstName: 'test', email: 'a@a.com' } as any,
+      new Date(),
+    );
     expect(queue.add).toHaveBeenCalled();
   });
 
   it('should add password reset job to queue', async () => {
     await service.sendPasswordResetLink('a@a.com', 'token');
-    expect(queue.add).toHaveBeenCalledWith('password-reset', expect.any(Object));
+    expect(queue.add).toHaveBeenCalledWith(
+      'password-reset',
+      expect.any(Object),
+    );
   });
 });

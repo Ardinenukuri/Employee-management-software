@@ -3,12 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   BeforeInsert,
-  OneToMany
+  OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Attendance } from './attendance.entity';
 import { UserRole } from '../../common/enums/user-role.enum';
-import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -44,9 +43,7 @@ export class User {
     cascade: true, // Allows cascading operations
     onDelete: 'CASCADE', // <-- When a User is deleted, also delete their Attendance records
   })
-
   attendances: Attendance[];
-
 
   @BeforeInsert()
   async hashPassword() {

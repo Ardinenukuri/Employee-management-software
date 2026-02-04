@@ -1,5 +1,9 @@
 // src/attendance/attendance.service.ts
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendance } from '../database/entities/attendance.entity';
 import { Repository, MoreThan, IsNull } from 'typeorm'; // <-- Import IsNull
@@ -33,10 +37,13 @@ export class AttendanceService {
       user,
       clockInTime: new Date(),
     });
-    
+
     await this.attendanceRepository.save(newRecord);
-    await this.mailProducerService.sendAttendanceConfirmation(user, newRecord.clockInTime);
-    
+    await this.mailProducerService.sendAttendanceConfirmation(
+      user,
+      newRecord.clockInTime,
+    );
+
     return newRecord;
   }
 

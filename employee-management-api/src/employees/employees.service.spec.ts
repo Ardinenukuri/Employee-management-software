@@ -35,7 +35,9 @@ describe('EmployeesService', () => {
 
   it('remove should throw NotFoundException if user missing', async () => {
     mockUserRepository.findOneBy.mockResolvedValue(null);
-    await expect(service.remove('invalid-id')).rejects.toThrow(NotFoundException);
+    await expect(service.remove('invalid-id')).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('findOne should throw if user missing', async () => {
@@ -50,7 +52,6 @@ describe('EmployeesService', () => {
     const result = await service.update('1', { firstName: 'New' });
     expect(result['password']).toBeUndefined();
   });
-
 
   it('findOne should throw NotFoundException', async () => {
     mockUserRepository.findOne.mockResolvedValue(null);

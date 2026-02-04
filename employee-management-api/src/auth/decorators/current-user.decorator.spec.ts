@@ -17,7 +17,11 @@ describe('CurrentUser Decorator', () => {
     } as unknown as ExecutionContext;
 
     // Extract the factory from the metadata
-    const metadata = Reflect.getMetadata(ROUTE_ARGS_METADATA, TestController, 'test');
+    const metadata = Reflect.getMetadata(
+      ROUTE_ARGS_METADATA,
+      TestController,
+      'test',
+    );
     const factory = metadata[Object.keys(metadata)[0]].factory;
 
     const result = factory(null, mockContext);

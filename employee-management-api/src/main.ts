@@ -20,7 +20,7 @@ async function bootstrap() {
   // Global Validation
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, 
+      whitelist: true,
       transform: true,
     }),
   );
@@ -40,4 +40,4 @@ async function bootstrap() {
   console.log(`Application is running on: http://localhost:3000/api/v1`);
   console.log(`Swagger documentation: http://localhost:3000/api`);
 }
-bootstrap();
+bootstrap().catch((err) => console.error(err));

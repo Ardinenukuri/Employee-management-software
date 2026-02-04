@@ -4,7 +4,12 @@ import { EmployeesService } from './employees.service';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
-  const mockService = { findAll: jest.fn(), findOne: jest.fn(), update: jest.fn(), remove: jest.fn() };
+  const mockService = {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

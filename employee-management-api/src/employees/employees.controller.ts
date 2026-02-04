@@ -1,5 +1,17 @@
 // src/employees/employees.controller.ts
-import { Controller, Get, Patch, Param, ParseUUIDPipe, UseGuards, Body, Query, DefaultValuePipe, ParseIntPipe, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Param,
+  ParseUUIDPipe,
+  UseGuards,
+  Body,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+  Delete,
+} from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -42,7 +54,7 @@ export class EmployeesController {
   @Roles(UserRole.ADMIN)
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto
+    @Body() updateEmployeeDto: UpdateEmployeeDto,
   ) {
     return this.employeesService.update(id, updateEmployeeDto);
   }

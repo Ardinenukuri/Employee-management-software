@@ -27,7 +27,7 @@ describe('Employee API (e2e)', () => {
         email: `john.${Date.now()}@test.com`, // Dynamic email
         password: 'password123',
         employeeIdentifier: `ID-${Date.now()}`,
-        phoneNumber: '0780000000'
+        phoneNumber: '0780000000',
       })
       .expect(201);
   });
@@ -37,9 +37,9 @@ describe('Employee API (e2e)', () => {
     const response = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
       .send({ email: 'admin@test.com', password: 'password123' }); // Adjust credentials
-    
+
     if (response.status === 200) {
-        authToken = response.body.accessToken;
+      authToken = response.body.accessToken;
     }
     expect(response.status).toBeDefined();
   });

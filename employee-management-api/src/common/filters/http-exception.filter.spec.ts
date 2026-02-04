@@ -24,10 +24,12 @@ describe('HttpExceptionFilter', () => {
     filter.catch(exception, mockArgumentsHost);
 
     expect(mockResponse.status).toHaveBeenCalledWith(status);
-    expect(mockResponse.json).toHaveBeenCalledWith(expect.objectContaining({
-      success: false,
-      statusCode: status,
-      message: 'Test Message',
-    }));
+    expect(mockResponse.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        success: false,
+        statusCode: status,
+        message: 'Test Message',
+      }),
+    );
   });
 });

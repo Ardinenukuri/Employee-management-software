@@ -1,5 +1,14 @@
 // src/reports/reports.controller.ts
-import { Controller, Get, Query, Res, StreamableFile, UseGuards, Param, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Res,
+  StreamableFile,
+  UseGuards,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import type { Response } from 'express'; // <-- Add 'type' keyword
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -25,7 +34,10 @@ export class ReportsController {
     @Query('endDate') endDate: Date,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const buffer = await this.reportsService.generatePdfReport(startDate, endDate);
+    const buffer = await this.reportsService.generatePdfReport(
+      startDate,
+      endDate,
+    );
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': 'attachment; filename=attendance-report.pdf',
@@ -42,9 +54,13 @@ export class ReportsController {
     @Query('endDate') endDate: Date,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const buffer = await this.reportsService.generateExcelReport(startDate, endDate);
+    const buffer = await this.reportsService.generateExcelReport(
+      startDate,
+      endDate,
+    );
     res.set({
-      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition': 'attachment; filename=attendance-report.xlsx',
     });
     return new StreamableFile(buffer);
@@ -52,18 +68,25 @@ export class ReportsController {
 
   @Post('attendance/generate')
   @ApiQuery({ name: 'type', enum: ['pdf', 'excel'] })
-  async trigger(@Query('type') type: 'pdf' | 'excel', @Query('start') start: Date, @Query('end') end: Date) {
+  async trigger(
+    @Query('type') type: 'pdf' | 'excel',
+    @Query('start') start: Date,
+    @Query('end') end: Date,
+  ) {
     return this.reportsService.startReportGeneration(type, start, end);
   }
 
   @Get('status/:jobId')
-  async status(@Param('jobId') jobId: string) {
+  status(@Param('jobId') jobId: string) {
     return this.reportsService.getReportStatus(jobId);
   }
 
   @Get('download/:jobId')
-  async download(@Param('jobId') jobId: string, @Res({ passthrough: true }) res: Response) {
-    const report = await this.reportsService.downloadReport(jobId);
+  download(
+    @Param('jobId') jobId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const report = this.reportsService.downloadReport(jobId);
     res.set({ 'Content-Type': report.type });
     if (!report.buffer) {
       throw new Error('Report buffer is undefined');

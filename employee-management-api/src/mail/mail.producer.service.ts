@@ -13,12 +13,12 @@ export class MailProducerService {
       userName: user.firstName,
       clockInTime,
     });
-  };
+  }
 
   async sendPasswordResetLink(userEmail: string, token: string) {
     // In a real app, you would build a frontend URL
     const resetLink = `http://localhost:3000/api/v1/auth/reset-password?token=${token}`;
-    
+
     await this.queue.add('password-reset', {
       userEmail,
       resetLink,

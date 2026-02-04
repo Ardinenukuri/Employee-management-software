@@ -1,5 +1,10 @@
 // src/auth/auth.service.ts
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../database/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -19,7 +24,7 @@ export class AuthService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private jwtService: JwtService,
-    private mailProducerService: MailProducerService
+    private mailProducerService: MailProducerService,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
@@ -30,14 +35,16 @@ export class AuthService {
       withDeleted: true,
     });
     if (existingUser) {
-      throw new ConflictException('Email or Employee Identifier already exists');
+      throw new ConflictException(
+        'Email or Employee Identifier already exists',
+      );
     }
 
     const user = this.usersRepository.create(createUserDto);
     await this.usersRepository.save(user);
 
     // This now correctly matches the updated UserWithoutPassword type
-    const { password, ...result } = user;
+    const { password: _password, ...result } = user;
     return result;
   }
 
@@ -59,27 +66,41 @@ export class AuthService {
     const user = await this.usersRepository.findOneBy({ email });
     if (!user) {
       // We don't want to reveal if a user exists or not for security reasons
-      return { message: 'If a matching account exists, a password reset link has been sent.' };
+      return {
+        message:
+          'If a matching account exists, a password reset link has been sent.',
+      };
     }
 
     // Create a special, short-lived token for password reset
-    const payload = { email: user.email, sub: user.id, purpose: 'password-reset' };
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      purpose: 'password-reset',
+    };
     const token = this.jwtService.sign(payload, { expiresIn: '10m' });
 
     await this.mailProducerService.sendPasswordResetLink(user.email, token);
 
-    return { message: 'If a matching account exists, a password reset link has been sent.' };
+    return {
+      message:
+        'If a matching account exists, a password reset link has been sent.',
+    };
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<{ message: string }> {
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDto,
+  ): Promise<{ message: string }> {
     const { token, newPassword } = resetPasswordDto;
     let payload;
 
     // 1. Verify ONLY the token structure
     try {
       payload = this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid or expired password reset token.');
+    } catch (_error) {
+      throw new UnauthorizedException(
+        'Invalid or expired password reset token.',
+      );
     }
 
     // 2. Check purpose outside the try/catch
@@ -92,7 +113,7 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    
+
     user.password = await bcrypt.hash(newPassword, 10);
     await this.usersRepository.save(user);
 

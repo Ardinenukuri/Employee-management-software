@@ -25,8 +25,8 @@ describe('AuthController', () => {
     await controller.login({} as any);
     await controller.forgotPassword({ email: 't@t.com' });
     await controller.resetPassword({} as any);
-    await controller.logout();
-    
+    controller.logout();
+
     expect(mockAuthService.register).toHaveBeenCalled();
     expect(mockAuthService.login).toHaveBeenCalled();
     expect(mockAuthService.forgotPassword).toHaveBeenCalled();
