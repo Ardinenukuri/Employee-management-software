@@ -10,6 +10,11 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
 
+    # This tells GitHub to run all commands inside your subfolder
+    defaults:
+      run:
+        working-directory: employee-management-api 
+
     services:
       mysql:
         image: mysql:8.0
@@ -27,11 +32,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        # We tell the cache exactly where the lock file is
         cache: 'npm'
+        cache-dependency-path: employee-management-api/package-lock.json
     
     - name: Install Dependencies
       run: npm ci
@@ -51,5 +59,5 @@ jobs:
         DB_PASSWORD: test_password
         DB_DATABASE: test_db
         JWT_SECRET: a_different_test_secret
-        REDIS_HOST: localhost # E2E tests for queues are complex, so we often mock them. This assumes no Redis needed.
+        REDIS_HOST: localhost
         REDIS_PORT: 6379
