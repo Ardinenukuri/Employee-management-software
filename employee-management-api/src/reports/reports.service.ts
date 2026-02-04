@@ -9,6 +9,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
 
+// Simple UUID v4 generator without external dependencies
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 @Injectable()
 export class ReportsService {
   private reportStore = new Map<
@@ -47,8 +56,7 @@ export class ReportsService {
     startDate: Date,
     endDate: Date,
   ) {
-    const { v4: uuidv4 } = await import('uuid');
-    const jobId = uuidv4(); // <--- Using uuid package with dynamic import
+    const jobId = generateUUID(); // <--- Using built-in UUID generator
     this.reportStore.set(jobId, { status: 'processing' });
     await this.reportQueue.add('generate', { jobId, type, startDate, endDate });
     return { jobId };
