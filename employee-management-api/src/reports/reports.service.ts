@@ -8,7 +8,7 @@ import { Buffer } from 'buffer';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
-import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ReportsService {
@@ -48,7 +48,7 @@ export class ReportsService {
     startDate: Date,
     endDate: Date,
   ) {
-    const jobId = randomUUID(); // <--- Built-in, no imports needed
+    const jobId = uuidv4(); // <--- Using uuid package
     this.reportStore.set(jobId, { status: 'processing' });
     await this.reportQueue.add('generate', { jobId, type, startDate, endDate });
     return { jobId };
