@@ -7,19 +7,19 @@ describe('MailConsumer', () => {
     consumer = new MailConsumer();
   });
 
-  it('should process attendance confirmation', async () => {
+  it('should process attendance confirmation', () => {
     const job = {
       data: { userEmail: 't@t.com', userName: 'Test', clockInTime: new Date() },
     };
-    await expect(
+    expect(() =>
       consumer.handleAttendanceConfirmation(job as any),
-    ).resolves.not.toThrow();
+    ).not.toThrow();
   });
 
-  it('should process password reset', async () => {
+  it('should process password reset', () => {
     const job = { data: { userEmail: 't@t.com', resetLink: 'http://link' } };
-    await expect(
+    expect(() =>
       consumer.handlePasswordReset(job as any),
-    ).resolves.not.toThrow();
+    ).not.toThrow();
   });
 });

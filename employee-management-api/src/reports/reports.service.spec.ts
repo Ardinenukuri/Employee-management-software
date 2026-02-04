@@ -33,8 +33,8 @@ describe('ReportsService', () => {
     expect(queue.add).toHaveBeenCalled();
   });
 
-  it('should throw error if status jobId is invalid', async () => {
-    await expect(service.getReportStatus('invalid')).rejects.toThrow(
+  it('should throw error if status jobId is invalid', () => {
+    expect(() => service.getReportStatus('invalid')).toThrow(
       NotFoundException,
     );
   });
@@ -67,7 +67,7 @@ describe('ReportsService', () => {
       new Date(),
       new Date(),
     );
-    await expect(service.downloadReport(jobId)).rejects.toThrow(
+    expect(() => service.downloadReport(jobId)).toThrow(
       NotFoundException,
     );
   });

@@ -18,14 +18,14 @@ describe('ReportsController', () => {
     controller = module.get<ReportsController>(ReportsController);
   });
 
-  it('should call all service endpoints', async () => {
+  it('should call all service endpoints', () => {
     const res = { set: jest.fn() } as any;
-    mockService.downloadReport.mockResolvedValue({
+    mockService.downloadReport.mockReturnValue({
       buffer: Buffer.from(''),
       type: 'pdf',
     });
 
-    await controller.trigger('pdf', new Date(), new Date());
+    controller.trigger('pdf', new Date(), new Date());
     controller.status('123');
     controller.download('123', res);
 
