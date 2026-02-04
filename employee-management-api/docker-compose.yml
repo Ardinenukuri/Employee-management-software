@@ -1,0 +1,30 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql_db:
+    image: mysql:8.0
+    container_name: employee-mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: your_strong_password  # <-- IMPORTANT: Change this if you want
+      MYSQL_DATABASE: employee_management
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Redis Service for Queues
+  redis:
+    image: redis:6.2-alpine
+    container_name: employee-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  mysql_data:
+  redis_data:
