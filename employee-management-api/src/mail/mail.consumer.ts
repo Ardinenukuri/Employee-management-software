@@ -1,5 +1,5 @@
 import { Process, Processor } from '@nestjs/bull';
-import type { Job } from 'bull'; // <-- Add 'type' keyword
+import type { Job } from 'bull'; 
 
 @Processor('mail-queue')
 export class MailConsumer {

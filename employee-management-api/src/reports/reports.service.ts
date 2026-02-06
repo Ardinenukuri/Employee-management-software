@@ -9,7 +9,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
 
-// Simple UUID v4 generator without external dependencies
 function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -30,7 +29,6 @@ export class ReportsService {
     private attendanceRepository: Repository<Attendance>,
   ) {}
 
-  // Because we are now using hard delete, we no longer need 'withDeleted' here
   private async getAttendanceData(
     startDate: Date,
     endDate: Date,
@@ -56,7 +54,7 @@ export class ReportsService {
     startDate: Date,
     endDate: Date,
   ) {
-    const jobId = generateUUID(); // <--- Using built-in UUID generator
+    const jobId = generateUUID(); 
     this.reportStore.set(jobId, { status: 'processing' });
     await this.reportQueue.add('generate', { jobId, type, startDate, endDate });
     return { jobId };
@@ -75,7 +73,6 @@ export class ReportsService {
     return { buffer: report.buffer, type: report.type };
   }
 
-  // This will be called by the Queue Consumer
   async processReportJob(
     jobId: string,
     type: 'pdf' | 'excel',
@@ -102,14 +99,11 @@ export class ReportsService {
     const doc = new jsPDF();
 
     autoTable(doc, {
-      // Step 1: Add new headers for the PDF
       head: [
         ['Date', 'Employee', 'Email', 'Identifier', 'Clock In', 'Clock Out'],
       ],
       body: data.map((item) => [
         item.date.toLocaleDateString(),
-        // Step 2: Add new data points for the PDF
-        // The check for item.user is still good practice in case of rare issues
         item.user ? `${item.user.firstName} ${item.user.lastName}` : 'N/A',
         item.user ? item.user.email : 'N/A',
         item.user ? item.user.employeeIdentifier : 'N/A',
@@ -125,7 +119,6 @@ export class ReportsService {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Attendance Report');
 
-    // Step 1: Add new column definitions for Excel
     worksheet.columns = [
       { header: 'Date', key: 'date', width: 15 },
       { header: 'Employee', key: 'employee', width: 30 },
@@ -138,7 +131,6 @@ export class ReportsService {
     data.forEach((item) => {
       worksheet.addRow({
         date: item.date.toLocaleDateString(),
-        // Step 2: Add new data points for each row in Excel
         employee: item.user
           ? `${item.user.firstName} ${item.user.lastName}`
           : 'N/A',

@@ -56,7 +56,7 @@ describe('RolesGuard', () => {
       getHandler: jest.fn(),
       getClass: jest.fn(),
       switchToHttp: () => ({
-        getRequest: () => ({ user: {} }), // User object exists, but role is missing
+        getRequest: () => ({ user: {} }), 
       }),
     } as any;
     expect(guard.canActivate(context)).toBe(false);

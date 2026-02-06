@@ -1,4 +1,3 @@
-// src/reports/reports.controller.ts
 import {
   Controller,
   Get,
@@ -10,14 +9,13 @@ import {
   Post,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
-import type { Response } from 'express'; // <-- Add 'type' keyword
+import type { Response } from 'express'; 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-// ... (rest of the controller code is the same)
 @ApiTags('Reports')
 @ApiBearerAuth()
 @Controller('reports')

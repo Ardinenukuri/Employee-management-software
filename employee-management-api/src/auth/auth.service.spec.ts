@@ -12,7 +12,6 @@ import {
 import * as bcrypt from 'bcrypt';
 import { MailProducerService } from '../mail/mail.producer.service';
 
-// Mock bcrypt
 jest.mock('bcrypt', () => ({
   compare: jest.fn(),
   hash: jest.fn().mockResolvedValue('hashedPassword'),
@@ -22,7 +21,6 @@ describe('AuthService', () => {
   let service: AuthService;
   let userRepository: Repository<User>;
 
-  // 1. IMPROVED MOCK: Added findOneBy
   const mockUserRepository = {
     findOne: jest.fn(),
     findOneBy: jest.fn(),
@@ -53,7 +51,6 @@ describe('AuthService', () => {
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
-  // Clear all mocks after each test to ensure a clean state
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -105,7 +102,7 @@ describe('AuthService', () => {
     });
 
     it('resetPassword should throw UnauthorizedException on verification error', async () => {
-      // Force verify to throw an error
+      
       jest.spyOn(mockJwtService, 'verify').mockImplementation(() => {
         throw new Error('JWT Expired');
       });

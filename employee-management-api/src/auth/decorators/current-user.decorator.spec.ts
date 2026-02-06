@@ -4,7 +4,6 @@ import { ROUTE_ARGS_METADATA } from '@nestjs/common/constants';
 
 describe('CurrentUser Decorator', () => {
   it('should return user from request', () => {
-    // Create a dummy class to host the decorator
     class TestController {
       test(@CurrentUser() user: any) {}
     }
@@ -16,7 +15,6 @@ describe('CurrentUser Decorator', () => {
       }),
     } as unknown as ExecutionContext;
 
-    // Extract the factory from the metadata
     const metadata = Reflect.getMetadata(
       ROUTE_ARGS_METADATA,
       TestController,

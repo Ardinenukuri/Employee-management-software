@@ -1,4 +1,3 @@
-// src/auth/auth.service.ts
 import {
   Injectable,
   UnauthorizedException,
@@ -15,8 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MailProducerService } from '../mail/mail.producer.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
-// Define a type for the user object without the password AND the method
-type UserWithoutPassword = Omit<User, 'password' | 'hashPassword'>; // <-- Also omit hashPassword
+type UserWithoutPassword = Omit<User, 'password' | 'hashPassword'>; 
 
 @Injectable()
 export class AuthService {
@@ -43,12 +41,10 @@ export class AuthService {
     const user = this.usersRepository.create(createUserDto);
     await this.usersRepository.save(user);
 
-    // This now correctly matches the updated UserWithoutPassword type
     const { password: _password, ...result } = user;
     return result;
   }
 
-  // ... (login method is unchanged)
   async login(loginDto: LoginDto): Promise<{ accessToken: string }> {
     const { email, password } = loginDto;
     const user = await this.usersRepository.findOneBy({ email });
@@ -65,14 +61,12 @@ export class AuthService {
   async forgotPassword(email: string): Promise<{ message: string }> {
     const user = await this.usersRepository.findOneBy({ email });
     if (!user) {
-      // We don't want to reveal if a user exists or not for security reasons
       return {
         message:
           'If a matching account exists, a password reset link has been sent.',
       };
     }
 
-    // Create a special, short-lived token for password reset
     const payload = {
       email: user.email,
       sub: user.id,
@@ -94,7 +88,6 @@ export class AuthService {
     const { token, newPassword } = resetPasswordDto;
     let payload;
 
-    // 1. Verify ONLY the token structure
     try {
       payload = this.jwtService.verify(token);
     } catch (_error) {
@@ -103,12 +96,10 @@ export class AuthService {
       );
     }
 
-    // 2. Check purpose outside the try/catch
     if (payload.purpose !== 'password-reset') {
       throw new UnauthorizedException('Invalid token purpose');
     }
 
-    // 3. Lookup user (Now the test will see the NotFoundException)
     const user = await this.usersRepository.findOneBy({ email: payload.email });
     if (!user) {
       throw new NotFoundException('User not found');

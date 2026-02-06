@@ -40,8 +40,8 @@ export class User {
   role: UserRole;
 
   @OneToMany(() => Attendance, (attendance) => attendance.user, {
-    cascade: true, // Allows cascading operations
-    onDelete: 'CASCADE', // <-- When a User is deleted, also delete their Attendance records
+    cascade: true, 
+    onDelete: 'CASCADE', 
   })
   attendances: Attendance[];
 

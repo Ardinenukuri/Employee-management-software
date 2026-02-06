@@ -1,11 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'; // added UseGuards
+import { Body, Controller, Post, UseGuards } from '@nestjs/common'; 
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../employees/dto/create-employee.dto';
 import { LoginDto } from './dto/login.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'; // added ApiBearerAuth
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'; 
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard'; // added JwtAuthGuard import
+import { JwtAuthGuard } from './guards/jwt-auth.guard'; 
 
 @ApiTags('Authentication')
 @Controller('auth')

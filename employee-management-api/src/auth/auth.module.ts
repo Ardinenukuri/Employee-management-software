@@ -1,4 +1,3 @@
-// src/auth/auth.module.ts
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -26,9 +25,9 @@ import { MailModule } from '../mail/mail.module';
         const expiresIn = config.get<string>('JWT_EXPIRATION_TIME');
 
         return {
-          secret: secret, // <-- Now guaranteed to be a string
+          secret: secret, 
           signOptions: {
-            expiresIn: expiresIn ? parseInt(expiresIn, 10) : 3600, // <-- Parse to a number
+            expiresIn: expiresIn ? parseInt(expiresIn, 10) : 3600,
           },
         };
       },

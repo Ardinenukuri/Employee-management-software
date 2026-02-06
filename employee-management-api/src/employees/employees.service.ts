@@ -1,4 +1,3 @@
-// src/employees/employees.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../database/entities/user.entity';
@@ -25,7 +24,7 @@ export class EmployeesService {
         'employeeIdentifier',
         'phoneNumber',
         'role',
-      ], // Explicitly exclude password
+      ], 
     });
     return { data, total, page, lastPage: Math.ceil(total / limit) };
   }
@@ -50,16 +49,13 @@ export class EmployeesService {
   }
 
   async remove(id: string): Promise<void> {
-    // First, find the user to ensure they exist
     const userToRemove = await this.usersRepository.findOneBy({ id });
     if (!userToRemove) {
       throw new NotFoundException(`User with ID "${id}" not found`);
     }
 
-    // Now, perform the hard delete
     await this.usersRepository.remove(userToRemove);
-    // Because of the 'onDelete: CASCADE' setting, all of this user's
-    // attendance records will be automatically deleted by the database.
+    
   }
 
   async update(
@@ -76,7 +72,6 @@ export class EmployeesService {
 
     const { password: _password, ...result } = updatedUser;
 
-    // The returned 'result' object now correctly matches the updated return type
     return result;
   }
 }

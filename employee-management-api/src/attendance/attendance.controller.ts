@@ -1,4 +1,3 @@
-// src/attendance/attendance.controller.ts
 import { Controller, Post, UseGuards } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';

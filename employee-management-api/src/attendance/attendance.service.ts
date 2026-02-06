@@ -1,4 +1,3 @@
-// src/attendance/attendance.service.ts
 import {
   Injectable,
   ConflictException,
@@ -6,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendance } from '../database/entities/attendance.entity';
-import { Repository, MoreThan, IsNull } from 'typeorm'; // <-- Import IsNull
+import { Repository, MoreThan, IsNull } from 'typeorm'; 
 import { User } from '../database/entities/user.entity';
 import { MailProducerService } from '../mail/mail.producer.service';
 import { startOfDay } from 'date-fns';
@@ -54,7 +53,7 @@ export class AttendanceService {
       where: {
         user: { id: user.id },
         clockInTime: MoreThan(todayStart),
-        clockOutTime: IsNull(), // <-- Use IsNull() instead of null
+        clockOutTime: IsNull(), 
       },
     });
 
